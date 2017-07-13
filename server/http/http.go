@@ -12,7 +12,7 @@ func Init() {
 	log.Println("init controller")
 	http.HandleFunc("/test", test)
 
-	port := conf.Config().Http.Port
+	port := conf.Config().Server.Http.Port
 	log.Println("start server on port", port)
 	http.ListenAndServe(":"+port, nil)
 }

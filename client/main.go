@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
+	crpc "zz.com/go-study/client/rpc"
 	"zz.com/go-study/conf"
-	"zz.com/go-study/server/db"
-	"zz.com/go-study/server/http"
 )
 
 // CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build
@@ -20,7 +20,7 @@ func main() {
 
 	version := flag.Bool("v", false, "show version")
 	help := flag.Bool("h", false, "help")
-	cfg := flag.String("c", "conf/cfg.json", "cfg json")
+	cfg := flag.String("c", "../conf/cfg.json", "cfg json")
 	flag.Parse()
 
 	if *version {
@@ -35,16 +35,21 @@ func main() {
 
 	conf.ParseConfig(*cfg)
 
-	log.Println(conf.Config().Redis.Addr)
-	for _, addr := range conf.Config().JsonRpc.Addrs {
-		log.Println(addr)
+	rpcAddr := conf.Config().Client.JsonRpc
+
+	client := &crpc.ConnRpcClient{
+		RpcServerAddress: rpcAddr,
+		Timeout:          time.Duration(5 * time.Second),
 	}
 
-	db.Init(conf.Config().Database)
-	users, _ := db.Query()
-	for _, u := range users {
-		log.Println(u.ID, u.Username, u.Password, u.CreateDate.Format("2006-01-02 15:04:05"))
-	}
+	args := "query"
+	var reply int
 
-	http.Init()
+	err := client.Call("Server.Ping", &args, &reply)
+
+	if err != nil {
+		log.Fatalf("rpc call error %v", err)
+	} else {
+		log.Println("rpc call result:", reply)
+	}
 }

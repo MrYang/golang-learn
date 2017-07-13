@@ -1,16 +1,17 @@
 {
-  "debug": true,
-  "database": "root:123456@tcp(127.0.0.1:3306)/test?parseTime=true&charset=utf8",
-  "http": {
-    "port": "8080"
+  "common": {
+    "redis": "127.0.0.1:6379",
+    "database": "root:123456@tcp(127.0.0.1:3306)/test?parseTime=true&charset=utf8"
   },
-  "redis": {
-    "addr": "127.0.0.1:6379"
+  "server": {
+    "http": {
+      "port": "8080"
+    },
+    "jsonRpc": {
+      "listen": "0.0.0.0:9090"
+    }
   },
-  "jsonrpc": {
-    "addrs": [
-      "127.0.0.1:9090",
-      "127.0.0.1:9091"
-    ]
+  "client": {
+    "jsonRpc": "127.0.0.1:9090"
   }
 }

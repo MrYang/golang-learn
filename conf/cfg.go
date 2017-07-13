@@ -9,23 +9,31 @@ import (
 )
 
 type GlobalConfig struct {
-	Debug    bool           `json:"debug"`
-	Database string         `json:"database"`
-	Http     *HttpConfig    `json:http`
-	Redis    *RedisConfig   `json:redis`
-	JsonRpc  *JsonRpcConfig `json:jsonprc`
+	Common *CommonConfig `json:common`
+	Server *ServerConfig `json:server`
+	Client *ClientConfig `json:client`
 }
 
-type HttpConfig struct {
-	Port string `json:"port"`
+type CommonConfig struct {
+	Redis    string `json:redis`
+	Database string `json:database`
 }
 
-type RedisConfig struct {
-	Addr string `json:"addr"`
+type ServerConfig struct {
+	Http    *ServerHttpConfig    `json:http`
+	JsonRpc *ServerJsonRpcConfig `json:jsonRpc`
 }
 
-type JsonRpcConfig struct {
-	Addrs []string `json:"addrs"`
+type ServerHttpConfig struct {
+	Port string `json:port`
+}
+
+type ServerJsonRpcConfig struct {
+	Listen string `json:listen`
+}
+
+type ClientConfig struct {
+	JsonRpc string `json:jsonRpc`
 }
 
 var (
