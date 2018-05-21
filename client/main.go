@@ -15,6 +15,8 @@ import (
 // ./go-study -c cfg.json 2>app.log
 // go run main.go
 
+const v = "0.0.1"
+
 func main() {
 	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
 
@@ -24,7 +26,7 @@ func main() {
 	flag.Parse()
 
 	if *version {
-		fmt.Println("0.0.1")
+		fmt.Println(v)
 		os.Exit(0)
 	}
 
@@ -36,6 +38,7 @@ func main() {
 	conf.ParseConfig(*cfg)
 
 	rpcAddr := conf.Config().Client.JsonRpc
+	gRpcAddr := conf.Config().Client.GRpc
 
 	client := &crpc.ConnRpcClient{
 		RpcServerAddress: rpcAddr,
@@ -45,11 +48,13 @@ func main() {
 	args := "query"
 	var reply int
 
-	err := client.Call("Server.Ping", &args, &reply)
+	err := client.Call("Echo.Ping", &args, &reply)
 
 	if err != nil {
-		log.Fatalf("rpc call error %v", err)
+		log.Println("rpc call error %v", err)
 	} else {
 		log.Println("rpc call result:", reply)
 	}
+
+	crpc.CallGRpc(gRpcAddr)
 }

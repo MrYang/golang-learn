@@ -4,36 +4,46 @@ import (
 	"encoding/json"
 	"log"
 	"sync"
-
-	"github.com/toolkits/file"
+	"zz.com/go-study/kit/file"
 )
 
 type GlobalConfig struct {
-	Common *CommonConfig `json:common`
-	Server *ServerConfig `json:server`
-	Client *ClientConfig `json:client`
+	Common *CommonConfig `json:"common"`
+	Server *ServerConfig `json:"server"`
+	Client *ClientConfig `json:"client"`
 }
 
 type CommonConfig struct {
-	Redis    string `json:redis`
-	Database string `json:database`
+	Redis    string `json:"redis"`
+	Database string `json:"database"`
 }
 
 type ServerConfig struct {
-	Http    *ServerHttpConfig    `json:http`
-	JsonRpc *ServerJsonRpcConfig `json:jsonRpc`
+	Http    *ServerHttpConfig    `json:"http"`
+	JsonRpc *ServerJsonRpcConfig `json:"jsonRpc"`
+	Rpc     *RpcConfig           `json:"rpc"`
+	GRpc    *GRpcConfig          `json:"gRpc"`
 }
 
 type ServerHttpConfig struct {
-	Port string `json:port`
+	Port string `json:"port"`
 }
 
 type ServerJsonRpcConfig struct {
-	Listen string `json:listen`
+	Listen string `json:"listen"`
+}
+
+type RpcConfig struct {
+	Listen string `json:"listen"`
+}
+
+type GRpcConfig struct {
+	Listen string `json:"listen"`
 }
 
 type ClientConfig struct {
-	JsonRpc string `json:jsonRpc`
+	JsonRpc string `json:"jsonRpc"`
+	GRpc    string `json:"gRpc"`
 }
 
 var (

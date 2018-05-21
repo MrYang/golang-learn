@@ -4,14 +4,24 @@
     "database": "root:123456@tcp(127.0.0.1:3306)/test?parseTime=true&charset=utf8"
   },
   "server": {
-    "http": {
-      "port": "8080"
-    },
     "jsonRpc": {
-      "listen": "0.0.0.0:9090"
+      "listen": ":9090"
+    },
+    "http": {
+      "port": ":8080"
+    },
+    "rpc": {
+      "listen": ":7070"
+    },
+    "tcp": {
+      "listen": ":6060"
+    },
+    "gRpc": {
+      "listen": ":5050"
     }
   },
   "client": {
-    "jsonRpc": "127.0.0.1:9090"
+    "jsonRpc": "127.0.0.1:9090",
+    "gRpc": "127.0.0.1:5050"
   }
 }

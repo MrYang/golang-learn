@@ -8,20 +8,18 @@ import (
 	"zz.com/go-study/conf"
 )
 
-func Init() {
+func Start() {
 	log.Println("init controller")
-	http.HandleFunc("/test", test)
+	http.HandleFunc("/test", func(w http.ResponseWriter, r *http.Request) {
+		r.ParseForm()
+		query := r.Form.Get("query")
+		log.Println("query:", query)
+		RenderMsgJson(w, "test")
+	})
 
 	port := conf.Config().Server.Http.Port
-	log.Println("start server on port", port)
-	http.ListenAndServe(":"+port, nil)
-}
-
-func test(w http.ResponseWriter, r *http.Request) {
-	r.ParseForm()
-	query := r.Form.Get("query")
-	log.Println("query:", query)
-	RenderMsgJson(w, "test")
+	log.Println("start http server on port", port)
+	http.ListenAndServe(port, nil)
 }
 
 func RenderJson(w http.ResponseWriter, v interface{}) {

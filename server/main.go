@@ -5,11 +5,14 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"runtime"
 
 	"zz.com/go-study/conf"
 	"zz.com/go-study/server/db"
 	"zz.com/go-study/server/http"
 	srpc "zz.com/go-study/server/rpc"
+	"os/signal"
+	"syscall"
 )
 
 // CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build
@@ -18,6 +21,7 @@ import (
 
 func main() {
 	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
+	runtime.GOMAXPROCS(runtime.NumCPU())
 
 	version := flag.Bool("v", false, "show version")
 	help := flag.Bool("h", false, "help")
@@ -36,14 +40,20 @@ func main() {
 
 	conf.ParseConfig(*cfg)
 
-	log.Println(conf.Config().Common.Redis)
-
 	db.Init(conf.Config().Common.Database)
-	users, _ := db.Query()
-	for _, u := range users {
-		log.Println(u.ID, u.Username, u.Password, u.CreateDate.Format("2006-01-02 15:04:05"))
+
+	go srpc.StartJsonRpc()
+	go srpc.StartTcp()
+	go http.Start()
+	go srpc.StartGRpc()
+
+	sg := make(chan os.Signal)
+	signal.Notify(sg, syscall.SIGINT, syscall.SIGQUIT, syscall.SIGKILL)
+
+	select {
+	case s := <-sg:
+		log.Println("got signal", s)
 	}
 
-	srpc.StartRpc()
-	http.Init()
+	log.Println("server is stopping...")
 }

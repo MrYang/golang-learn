@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+// 第二个命令产生 protobuffer 文件序列化和反序列化的代码，
+// 第一个命令比第二个增加了服务器和客户端通讯、实现的公共库代码
+// protoc --go_out=plugins=grpc:. *.proto
+// protoc --go_out=. *.proto
+
+option java_multiple_files = true;
+option java_package = "com.zz.pb.service";
+option java_outer_classname = "HelloServiceProto";
+
+package hello.service;
+
+message Req {
+    int32 id = 1;
+    string name = 2;
+    int32 age = 3;
+    enum GenderType {
+        UNKNOWN = 0;
+        MALE = 1;
+        FEMALE = 2;
+    }
+    GenderType gender = 4;
+}
+
+message Resp {
+    string msg = 1;
+}
+
+service Hello {
+
+    rpc Hello(Req) returns (Resp) {};
+}

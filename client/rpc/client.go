@@ -6,8 +6,11 @@ import (
 	"net/rpc"
 	"sync"
 	"time"
-
-	"github.com/toolkits/net"
+	"net/rpc/jsonrpc"
+	"net"
+	"google.golang.org/grpc"
+	pb "zz.com/go-study/protos"
+	"context"
 )
 
 type ConnRpcClient struct {
@@ -17,30 +20,34 @@ type ConnRpcClient struct {
 	Timeout          time.Duration
 }
 
-func (this *ConnRpcClient) close() {
-	if this.rpcClient != nil {
-		this.rpcClient.Close()
-		this.rpcClient = nil
+func (crc *ConnRpcClient) close() {
+	if crc.rpcClient != nil {
+		crc.rpcClient.Close()
+		crc.rpcClient = nil
 	}
 }
 
-func (this *ConnRpcClient) servConn() error {
-	if this.rpcClient != nil {
+func (crc *ConnRpcClient) servConn() error {
+	if crc.rpcClient != nil {
 		return nil
 	}
 
-	var err error
 	retry := 1
 
 	for {
-		if this.rpcClient != nil {
+		if crc.rpcClient != nil {
 			return nil
 		}
 
-		this.rpcClient, err = net.JsonRpcClient("tcp", this.RpcServerAddress, this.Timeout)
+		conn, err := net.DialTimeout("tcp", crc.RpcServerAddress, crc.Timeout)
+		if err != nil {
+			return err
+		}
+
+		crc.rpcClient = jsonrpc.NewClient(conn)
 
 		if err != nil {
-			log.Printf("dial %s fail: %v", this.RpcServerAddress, err)
+			log.Printf("dial %s fail: %v", crc.RpcServerAddress, err)
 			if retry > 3 {
 				return err
 			}
@@ -53,32 +60,56 @@ func (this *ConnRpcClient) servConn() error {
 	}
 }
 
-func (this *ConnRpcClient) Call(method string, args interface{}, reply interface{}) error {
-	this.Lock()
-	defer this.Unlock()
+func (crc *ConnRpcClient) Call(method string, args interface{}, reply interface{}) error {
+	crc.Lock()
+	defer crc.Unlock()
 
-	err := this.servConn()
+	err := crc.servConn()
 	if err != nil {
 		return err
 	}
 
-	timeout := time.Duration(50 * time.Second)
+	timeout := time.Duration(10 * time.Second)
 	done := make(chan error, 1)
 
 	go func() {
-		err := this.rpcClient.Call(method, args, reply)
+		err := crc.rpcClient.Call(method, args, reply)
 		done <- err
 	}()
 
 	select {
 	case <-time.After(timeout):
-		log.Printf("[WARN] rpc call timeout %v => %v", this.rpcClient, this.RpcServerAddress)
-		this.close()
+		log.Printf("[WARN] rpc call timeout %v => %v", crc.rpcClient, crc.RpcServerAddress)
+		crc.close()
 	case err := <-done:
 		if err != nil {
-			this.close()
+			crc.close()
 			return err
 		}
 	}
+	return nil
+}
+
+func CallGRpc(addr string) error {
+	conn, err := grpc.Dial(addr, grpc.WithInsecure())
+	if err != nil {
+		return nil
+	}
+	defer conn.Close()
+	c := pb.NewHelloClient(conn)
+
+	req := &pb.Req{
+		Id:     1,
+		Name:   "yxb",
+		Age:    0,
+		Gender: pb.Req_MALE,
+	}
+
+	resp, err := c.Hello(context.Background(), req)
+	if err != nil {
+		return nil
+	}
+	log.Printf("hello: %s", resp.Msg)
+
 	return nil
 }
