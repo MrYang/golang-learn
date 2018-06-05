@@ -70,6 +70,7 @@ func Start() {
 				msgType, msg, err := conn.ReadMessage()
 				log.Println("msgType", msgType)
 				if err != nil {
+					log.Println("read error", err)
 					exitChan <- struct{}{}
 					break
 				}
@@ -82,7 +83,8 @@ func Start() {
 		for {
 			select {
 			case msg := <-writeMsg:
-				if conn.WriteMessage(gws.TextMessage, []byte("reply "+string(msg))) != nil {
+				if err :=conn.WriteMessage(gws.TextMessage, []byte("reply "+string(msg))); err != nil {
+					log.Println("write error", err)
 					break
 				}
 			case <-exitChan:
