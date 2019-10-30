@@ -2,9 +2,9 @@ package conf
 
 import (
 	"encoding/json"
+	"go-study/kit/file"
 	"log"
 	"sync"
-	"zz.com/go-study/kit/file"
 )
 
 type GlobalConfig struct {
@@ -21,6 +21,7 @@ type CommonConfig struct {
 type ServerConfig struct {
 	Http    *ServerHttpConfig    `json:"http"`
 	JsonRpc *ServerJsonRpcConfig `json:"jsonRpc"`
+	Tcp     *TcpConfig           `json:"tcp"`
 	Rpc     *RpcConfig           `json:"rpc"`
 	GRpc    *GRpcConfig          `json:"gRpc"`
 }
@@ -37,6 +38,10 @@ type RpcConfig struct {
 	Listen string `json:"listen"`
 }
 
+type TcpConfig struct {
+	Listen string `json:"listen"`
+}
+
 type GRpcConfig struct {
 	Listen string `json:"listen"`
 }
@@ -44,6 +49,7 @@ type GRpcConfig struct {
 type ClientConfig struct {
 	JsonRpc string `json:"jsonRpc"`
 	GRpc    string `json:"gRpc"`
+	Rpc     string `json:"rpc"`
 }
 
 var (

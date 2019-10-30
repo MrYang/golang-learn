@@ -7,8 +7,8 @@ import (
 	"os"
 	"time"
 
-	crpc "zz.com/go-study/client/rpc"
-	"zz.com/go-study/conf"
+	crpc "go-study/client/rpc"
+	"go-study/conf"
 )
 
 // CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build
@@ -37,23 +37,31 @@ func main() {
 
 	conf.ParseConfig(*cfg)
 
-	rpcAddr := conf.Config().Client.JsonRpc
+	jsonRpcAddr := conf.Config().Client.JsonRpc
 	gRpcAddr := conf.Config().Client.GRpc
+	rpcAddr := conf.Config().Client.Rpc
 
 	client := &crpc.ConnRpcClient{
-		RpcServerAddress: rpcAddr,
+		RpcServerAddress: jsonRpcAddr,
 		Timeout:          time.Duration(5 * time.Second),
 	}
 
-	args := "query"
+	args := "json rpc query"
 	var reply int
-
 	err := client.Call("Echo.Ping", &args, &reply)
-
 	if err != nil {
-		log.Println("rpc call error %v", err)
+		log.Printf("json rpc call error %v", err)
 	} else {
-		log.Println("rpc call result:", reply)
+		log.Println("json rpc call result:", reply)
+	}
+
+	args2 := "rpc query"
+	var reply2 int
+	err = crpc.CallRpc(rpcAddr, "Echo.Ping", &args2, &reply2)
+	if err != nil {
+		log.Printf("rpc call error %v", err)
+	} else {
+		log.Println("rpc call result:", reply2)
 	}
 
 	crpc.CallGRpc(gRpcAddr)

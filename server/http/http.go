@@ -5,12 +5,13 @@ import (
 	"log"
 	"net/http"
 
-	"zz.com/go-study/conf"
-	"golang.org/x/net/websocket"
-	gws "github.com/gorilla/websocket"
 	"fmt"
-	"os"
+	"go-study/conf"
 	"io/ioutil"
+	"os"
+
+	gws "github.com/gorilla/websocket"
+	"golang.org/x/net/websocket"
 )
 
 func Start() {
@@ -83,7 +84,7 @@ func Start() {
 		for {
 			select {
 			case msg := <-writeMsg:
-				if err :=conn.WriteMessage(gws.TextMessage, []byte("reply "+string(msg))); err != nil {
+				if err := conn.WriteMessage(gws.TextMessage, []byte("reply "+string(msg))); err != nil {
 					log.Println("write error", err)
 					break
 				}

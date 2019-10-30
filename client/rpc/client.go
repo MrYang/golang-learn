@@ -1,16 +1,17 @@
 package rpc
 
 import (
+	"context"
+	pb "go-study/protos"
 	"log"
 	"math"
+	"net"
 	"net/rpc"
+	"net/rpc/jsonrpc"
 	"sync"
 	"time"
-	"net/rpc/jsonrpc"
-	"net"
+
 	"google.golang.org/grpc"
-	pb "zz.com/go-study/protos"
-	"context"
 )
 
 type ConnRpcClient struct {
@@ -79,7 +80,7 @@ func (crc *ConnRpcClient) Call(method string, args interface{}, reply interface{
 
 	select {
 	case <-time.After(timeout):
-		log.Printf("[WARN] rpc call timeout %v => %v", crc.rpcClient, crc.RpcServerAddress)
+		log.Printf("[WARN] json rpc call timeout %v => %v", crc.rpcClient, crc.RpcServerAddress)
 		crc.close()
 	case err := <-done:
 		if err != nil {
@@ -87,6 +88,34 @@ func (crc *ConnRpcClient) Call(method string, args interface{}, reply interface{
 			return err
 		}
 	}
+	return nil
+}
+
+func CallRpc(addr string, method string, args interface{}, reply interface{}) error {
+	client, err := rpc.Dial("tcp", addr)
+	if err != nil {
+		return err
+	}
+
+	timeout := time.Duration(10 * time.Second)
+	done := make(chan error, 1)
+
+	go func() {
+		err := client.Call(method, args, reply)
+		done <- err
+	}()
+
+	select {
+	case <-time.After(timeout):
+		log.Printf("[WARN] rpc call timeout %v => %v", client, addr)
+		client.Close()
+	case err := <-done:
+		if err != nil {
+			client.Close()
+			return err
+		}
+	}
+
 	return nil
 }
 

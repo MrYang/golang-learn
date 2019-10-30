@@ -7,10 +7,9 @@ import (
 	"os"
 	"runtime"
 
-	"zz.com/go-study/conf"
-	"zz.com/go-study/server/db"
-	"zz.com/go-study/server/http"
-	srpc "zz.com/go-study/server/rpc"
+	"go-study/conf"
+	"go-study/server/http"
+	srpc "go-study/server/rpc"
 	"os/signal"
 	"syscall"
 )
@@ -40,9 +39,8 @@ func main() {
 
 	conf.ParseConfig(*cfg)
 
-	db.Init(conf.Config().Common.Database)
-
 	go srpc.StartJsonRpc()
+	go srpc.StartRpc()
 	go srpc.StartTcp()
 	go http.Start()
 	go srpc.StartGRpc()

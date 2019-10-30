@@ -1,8 +1,8 @@
 package file
 
 import (
-	"os"
 	"io/ioutil"
+	"os"
 	"strings"
 )
 
