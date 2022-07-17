@@ -7,8 +7,9 @@ import (
 	"net/rpc/jsonrpc"
 
 	"bufio"
-	"go-study/conf"
-	pb "go-study/protos"
+
+	"github.com/MrYang/golang-learn/conf"
+	pb "github.com/MrYang/golang-learn/protos"
 
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"

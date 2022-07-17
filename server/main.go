@@ -7,15 +7,16 @@ import (
 	"os"
 	"runtime"
 
-	"go-study/conf"
-	"go-study/server/http"
-	srpc "go-study/server/rpc"
 	"os/signal"
 	"syscall"
+
+	"github.com/MrYang/golang-learn/conf"
+	"github.com/MrYang/golang-learn/server/http"
+	srpc "github.com/MrYang/golang-learn/server/rpc"
 )
 
 // CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build
-// ./go-study -c cfg.json 2>app.log
+// ./golang-learn -c cfg.json 2>app.log
 // go run main.go
 
 func main() {

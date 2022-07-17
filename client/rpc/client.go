@@ -2,7 +2,6 @@ package rpc
 
 import (
 	"context"
-	pb "go-study/protos"
 	"log"
 	"math"
 	"net"
@@ -10,6 +9,8 @@ import (
 	"net/rpc/jsonrpc"
 	"sync"
 	"time"
+
+	pb "github.com/MrYang/golang-learn/protos"
 
 	"google.golang.org/grpc"
 )

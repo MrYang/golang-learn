@@ -2,9 +2,10 @@ package conf
 
 import (
 	"encoding/json"
-	"go-study/kit/file"
 	"log"
 	"sync"
+
+	"github.com/MrYang/golang-learn/kit/file"
 )
 
 type GlobalConfig struct {

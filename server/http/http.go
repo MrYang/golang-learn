@@ -6,9 +6,10 @@ import (
 	"net/http"
 
 	"fmt"
-	"go-study/conf"
 	"io/ioutil"
 	"os"
+
+	"github.com/MrYang/golang-learn/conf"
 
 	gws "github.com/gorilla/websocket"
 	"golang.org/x/net/websocket"

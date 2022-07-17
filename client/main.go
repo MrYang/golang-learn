@@ -7,12 +7,12 @@ import (
 	"os"
 	"time"
 
-	crpc "go-study/client/rpc"
-	"go-study/conf"
+	crpc "github.com/MrYang/golang-learn/client/rpc"
+	"github.com/MrYang/golang-learn/conf"
 )
 
 // CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build
-// ./go-study -c cfg.json 2>app.log
+// ./golang-learn -c cfg.json 2>app.log
 // go run main.go
 
 const v = "0.0.1"
