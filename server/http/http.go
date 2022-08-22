@@ -2,11 +2,11 @@ package http
 
 import (
 	"encoding/json"
+	"io"
 	"log"
 	"net/http"
 
 	"fmt"
-	"io/ioutil"
 	"os"
 
 	"github.com/MrYang/golang-learn/conf"
@@ -102,7 +102,7 @@ func Start() {
 			return
 		}
 
-		index, err := ioutil.ReadAll(indexFile)
+		index, err := io.ReadAll(indexFile)
 		if err != nil {
 			http.NotFound(w, r)
 			return

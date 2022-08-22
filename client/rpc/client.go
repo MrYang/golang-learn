@@ -29,7 +29,7 @@ func (crc *ConnRpcClient) close() {
 	}
 }
 
-func (crc *ConnRpcClient) servConn() error {
+func (crc *ConnRpcClient) getRpcClient() error {
 	if crc.rpcClient != nil {
 		return nil
 	}
@@ -66,12 +66,12 @@ func (crc *ConnRpcClient) Call(method string, args interface{}, reply interface{
 	crc.Lock()
 	defer crc.Unlock()
 
-	err := crc.servConn()
+	err := crc.getRpcClient()
 	if err != nil {
 		return err
 	}
 
-	timeout := time.Duration(10 * time.Second)
+	timeout := 10 * time.Second
 	done := make(chan error, 1)
 
 	go func() {
@@ -98,7 +98,7 @@ func CallRpc(addr string, method string, args interface{}, reply interface{}) er
 		return err
 	}
 
-	timeout := time.Duration(10 * time.Second)
+	timeout := 10 * time.Second
 	done := make(chan error, 1)
 
 	go func() {

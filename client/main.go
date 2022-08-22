@@ -43,7 +43,7 @@ func main() {
 
 	client := &crpc.ConnRpcClient{
 		RpcServerAddress: jsonRpcAddr,
-		Timeout:          time.Duration(5 * time.Second),
+		Timeout:          5 * time.Second,
 	}
 
 	args := "json rpc query"

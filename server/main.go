@@ -13,6 +13,7 @@ import (
 	"github.com/MrYang/golang-learn/conf"
 	"github.com/MrYang/golang-learn/server/http"
 	srpc "github.com/MrYang/golang-learn/server/rpc"
+	stcp "github.com/MrYang/golang-learn/server/tcp"
 )
 
 // CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build
@@ -42,8 +43,9 @@ func main() {
 
 	go srpc.StartJsonRpc()
 	go srpc.StartRpc()
-	go srpc.StartTcp()
+	go stcp.StartTcp()
 	go http.Start()
+	go http.StartGin()
 	go srpc.StartGRpc()
 
 	sg := make(chan os.Signal)

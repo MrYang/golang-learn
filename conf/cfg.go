@@ -54,7 +54,6 @@ type ClientConfig struct {
 }
 
 var (
-	ConfigFile string
 	config     *GlobalConfig
 	configLock = new(sync.RWMutex)
 )
@@ -73,8 +72,6 @@ func ParseConfig(cfg string) {
 	if !file.IsExist(cfg) {
 		log.Fatalln("config file:", cfg, "is not exist")
 	}
-
-	ConfigFile = cfg
 
 	configContent, err := file.ToTrimString(cfg)
 	if err != nil {
