@@ -48,7 +48,7 @@ func main() {
 
 	args := "json rpc query"
 	var reply int
-	err := client.Call("Echo.Ping", &args, &reply)
+	err := client.CallJsonRpc("Echo.Ping", &args, &reply)
 	if err != nil {
 		log.Printf("json rpc call error %v", err)
 	} else {

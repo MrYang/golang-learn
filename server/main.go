@@ -43,10 +43,12 @@ func main() {
 
 	go srpc.StartJsonRpc()
 	go srpc.StartRpc()
+	go srpc.StartGRpc()
+
 	go stcp.StartTcp()
+
 	go http.Start()
 	go http.StartGin()
-	go srpc.StartGRpc()
 
 	sg := make(chan os.Signal)
 	signal.Notify(sg, syscall.SIGINT, syscall.SIGQUIT, syscall.SIGKILL)

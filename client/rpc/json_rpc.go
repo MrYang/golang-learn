@@ -1,7 +1,6 @@
 package rpc
 
 import (
-	"context"
 	"log"
 	"math"
 	"net"
@@ -9,10 +8,6 @@ import (
 	"net/rpc/jsonrpc"
 	"sync"
 	"time"
-
-	pb "github.com/MrYang/golang-learn/protos"
-
-	"google.golang.org/grpc"
 )
 
 type ConnRpcClient struct {
@@ -62,7 +57,7 @@ func (crc *ConnRpcClient) getRpcClient() error {
 	}
 }
 
-func (crc *ConnRpcClient) Call(method string, args interface{}, reply interface{}) error {
+func (crc *ConnRpcClient) CallJsonRpc(method string, args interface{}, reply interface{}) error {
 	crc.Lock()
 	defer crc.Unlock()
 
@@ -89,57 +84,5 @@ func (crc *ConnRpcClient) Call(method string, args interface{}, reply interface{
 			return err
 		}
 	}
-	return nil
-}
-
-func CallRpc(addr string, method string, args interface{}, reply interface{}) error {
-	client, err := rpc.Dial("tcp", addr)
-	if err != nil {
-		return err
-	}
-
-	timeout := 10 * time.Second
-	done := make(chan error, 1)
-
-	go func() {
-		err := client.Call(method, args, reply)
-		done <- err
-	}()
-
-	select {
-	case <-time.After(timeout):
-		log.Printf("[WARN] rpc call timeout %v => %v", client, addr)
-		client.Close()
-	case err := <-done:
-		if err != nil {
-			client.Close()
-			return err
-		}
-	}
-
-	return nil
-}
-
-func CallGRpc(addr string) error {
-	conn, err := grpc.Dial(addr, grpc.WithInsecure())
-	if err != nil {
-		return nil
-	}
-	defer conn.Close()
-	c := pb.NewHelloClient(conn)
-
-	req := &pb.Req{
-		Id:     1,
-		Name:   "yxb",
-		Age:    0,
-		Gender: pb.Req_MALE,
-	}
-
-	resp, err := c.Hello(context.Background(), req)
-	if err != nil {
-		return nil
-	}
-	log.Printf("hello: %s", resp.Msg)
-
 	return nil
 }

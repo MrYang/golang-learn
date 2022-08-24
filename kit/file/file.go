@@ -1,7 +1,6 @@
 package file
 
 import (
-	"io/ioutil"
 	"os"
 	"strings"
 )
@@ -12,7 +11,7 @@ func IsExist(f string) bool {
 }
 
 func ToTrimString(filePath string) (string, error) {
-	b, err := ioutil.ReadFile(filePath)
+	b, err := os.ReadFile(filePath)
 	if err != nil {
 		return "", err
 	}
