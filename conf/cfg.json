@@ -18,6 +18,9 @@
     },
     "gRpc": {
       "listen": ":5050"
+    },
+    "gnet": {
+      "listen": "4040"
     }
   },
   "client": {

@@ -25,6 +25,7 @@ type ServerConfig struct {
 	Tcp     *TcpConfig           `json:"tcp"`
 	Rpc     *RpcConfig           `json:"rpc"`
 	GRpc    *GRpcConfig          `json:"gRpc"`
+	Gnet    *GnetConfig          `json:"gnet"`
 }
 
 type ServerHttpConfig struct {
@@ -44,6 +45,10 @@ type TcpConfig struct {
 }
 
 type GRpcConfig struct {
+	Listen string `json:"listen"`
+}
+
+type GnetConfig struct {
 	Listen string `json:"listen"`
 }
 

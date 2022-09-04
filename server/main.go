@@ -46,6 +46,7 @@ func main() {
 	go srpc.StartGRpc()
 
 	go stcp.StartTcp()
+	go stcp.StartGnet()
 
 	go http.Start()
 	go http.StartGin()
